@@ -51,7 +51,7 @@ jobs:
             python train.py
 
           environment: azureml://registries/azureml/environments/AzureML-AutoML/versions/142
-          compute: azureml:shared-runner-1
+          compute: azureml:i2ml-subtle-raptor-small-cc
           experiment_name: bank-data-example
           description: Train a classification model on bank data
           EOF
