@@ -2,7 +2,7 @@ name: cli-jobs-pipelines-nyc-taxi-pipeline
 on:
   workflow_dispatch:
 env:
-  SUBSCRIPTION_ID: ${{ secrets.SERVICE_PRINCIPAL_ID }}
+  SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
   RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP }}
   WORKSPACE_NAME:  ${{ secrets.WORKSPACE_NAME }}
 
