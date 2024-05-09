@@ -43,12 +43,12 @@ jobs:
           \$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
           code: model
           environment_variables:
-            SERVICE_PRINCIPAL_ID: $SERVICE_PRINCIPAL_ID
-            SERVICE_PRINCIPAL_PASSWORD: $SERVICE_PRINCIPAL_PASSWORD
-            TENANT_ID: $TENANT_ID
-            SUBSCRIPTION_ID: $SUBSCRIPTION_ID
-            RESOURCE_GROUP: $RESOURCE_GROUP
-            WORKSPACE_NAME: $WORKSPACE_NAME
+            SERVICE_PRINCIPAL_ID: ${{ secrets.SERVICE_PRINCIPAL_ID }}
+            SERVICE_PRINCIPAL_PASSWORD: ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }}
+            TENANT_ID: ${{ secrets.TENANT_ID }}
+            SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+            RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+            WORKSPACE_NAME: ${{ secrets.WORKSPACE_NAME }}
 
           command: >-
             python train.py
