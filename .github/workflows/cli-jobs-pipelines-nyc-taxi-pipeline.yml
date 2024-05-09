@@ -3,8 +3,8 @@ on:
   workflow_dispatch:
 env:
   SUBSCRIPTION_ID: ${{ secrets.SERVICE_PRINCIPAL_ID }}
-  RESOURCE_GROUP_NAME: ${{ secrets.SERVICE_PRINCIPAL_ID }}
-  WORKSPACE_NAME:  ${{ secrets.SERVICE_PRINCIPAL_ID }}
+  RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP }}
+  WORKSPACE_NAME:  ${{ secrets.WORKSPACE_NAME }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
