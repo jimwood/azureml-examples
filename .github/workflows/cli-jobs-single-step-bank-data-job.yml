@@ -39,7 +39,25 @@ jobs:
       run: |
           source "${{ github.workspace }}/infra/bootstrapping/sdk_helpers.sh";
           source "${{ github.workspace }}/infra/bootstrapping/init_environment.sh";
-          ./template-job-yml.sh
+          cat > ./job.yml <<EOF
+          \$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+          code: model
+          environment_variables:
+            SERVICE_PRINCIPAL_ID: $SERVICE_PRINCIPAL_ID
+            SERVICE_PRINCIPAL_PASSWORD: $SERVICE_PRINCIPAL_PASSWORD
+            TENANT_ID: $TENANT_ID
+            SUBSCRIPTION_ID: $SUBSCRIPTION_ID
+            RESOURCE_GROUP: $RESOURCE_GROUP
+            WORKSPACE_NAME: $WORKSPACE_NAME
+
+          command: >-
+            python train.py
+
+          environment: azureml://registries/azureml/environments/AzureML-AutoML/versions/142
+          compute: azureml:shared-runner-1
+          experiment_name: bank-data-example
+          description: Train a classification model on bank data
+          EOF
           bash -x ../../../../run-job.sh job.yml
       working-directory: cli/jobs/single-step/dynamic-compute/bank-data
 
