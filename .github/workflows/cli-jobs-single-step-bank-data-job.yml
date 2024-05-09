@@ -41,5 +41,5 @@ jobs:
           source "${{ github.workspace }}/infra/bootstrapping/init_environment.sh";
           bash template-job-yml.sh
           bash -x ../../../../run-job.sh job.yml
-      working-directory: cli/jobs/single-setup/dynamic-compute/bank-data
+      working-directory: cli/jobs/single-step/dynamic-compute/bank-data
 
