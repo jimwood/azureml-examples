@@ -1,4 +1,3 @@
-print("Starting run!")
 import argparse
 import json
 import logging
@@ -21,6 +20,7 @@ from azureml.core.authentication import ServicePrincipalAuthentication
 
 
 def main(args):
+    print("Starting run!")
 
     svc_pr = ServicePrincipalAuthentication(
            tenant_id=args.tenant_id,
@@ -335,7 +335,6 @@ def main(args):
 
 
     import sys
-    import json
     from azureml.automl.core.onnx_convert import OnnxConvertConstants
     from azureml.train.automl import constants
 
