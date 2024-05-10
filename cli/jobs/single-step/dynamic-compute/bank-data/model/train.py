@@ -1,10 +1,17 @@
 import argparse
 import json
 import logging
+import sys
+import uuid
+import numpy as np
+from numpy import array
 
+import matplotlib
 from matplotlib import pyplot as plt
 import pandas as pd
 import os
+from sklearn.metrics import confusion_matrix
+import itertools
 
 import azureml.core
 from azureml.core.experiment import Experiment
@@ -13,6 +20,29 @@ from azureml.core.dataset import Dataset
 from azureml.train.automl import AutoMLConfig
 from azureml.interpret import ExplanationClient
 from azureml.core.authentication import ServicePrincipalAuthentication
+from azureml.core.compute import ComputeTarget, AmlCompute
+from azureml.core.compute_target import ComputeTargetException
+from azureml.core.run import Run
+
+import azureml.widgets
+from azureml.widgets import RunDetails
+
+from azureml.automl.runtime.onnx_convert import OnnxConverter
+from azureml.core import ScriptRunConfig
+from azureml._restclient.models import RunTypeV2
+from azureml._restclient.models.create_run_dto import CreateRunDto
+from azureml._restclient.run_client import RunClient
+from azureml.automl.core.onnx_convert import OnnxConvertConstants
+from azureml.train.automl import constants
+
+from azureml.automl.runtime.onnx_convert import OnnxInferenceHelper
+
+from azureml.core.model import InferenceConfig
+from azureml.core.webservice import AciWebservice
+from azureml.core.webservice import Webservice
+from azureml.core.model import Model
+from azureml.core.environment import Environment
+
 
 # As with other Azure services, there are limits on certain resources (e.g. AmlCompute) associated with the Azure Machine Learning service. Please read [this article](https://docs.microsoft.com/en-us/azure/machine-learning/service/how-to-manage-quotas) on the default limits and how to request more quota.
 
@@ -50,8 +80,6 @@ def main(args):
     outputDf = pd.DataFrame(data=output, index=[""])
     outputDf.T
 
-    from azureml.core.compute import ComputeTarget, AmlCompute
-    from azureml.core.compute_target import ComputeTargetException
 
     ## Pull in a couple env variables to make testing with various sizes easier
     ## These can be changed by running the script from a terminal tab with:
@@ -95,7 +123,6 @@ def main(args):
 
 
     # Add missing values in 75% of the lines.
-    import numpy as np
 
     missing_rate = 0.75
     n_missing_samples = int(np.floor(data.shape[0] * missing_rate))
@@ -257,9 +284,6 @@ def main(args):
     # In[ ]:
 
 
-    import azureml.widgets
-    from azureml.widgets import RunDetails
-
     RunDetails(remote_run).show()
 
 
@@ -270,7 +294,6 @@ def main(args):
 
 
     # Wait for the best model explanation run to complete
-    from azureml.core.run import Run
 
     model_explainability_run_id = remote_run.id + "_" + "ModelExplain"
     print(model_explainability_run_id)
@@ -323,9 +346,6 @@ def main(args):
 
     # In[ ]:
 
-
-    from azureml.automl.runtime.onnx_convert import OnnxConverter
-
     onnx_fl_path = "./best_model.onnx"
     OnnxConverter.save_onnx_model(onnx_mdl, onnx_fl_path)
 
@@ -335,11 +355,6 @@ def main(args):
     # In[ ]:
 
 
-    import sys
-    from azureml.automl.core.onnx_convert import OnnxConvertConstants
-    from azureml.train.automl import constants
-
-    from azureml.automl.runtime.onnx_convert import OnnxInferenceHelper
 
 
     def get_onnx_res(run):
@@ -422,12 +437,6 @@ def main(args):
     # In[ ]:
 
 
-    from azureml.core.model import InferenceConfig
-    from azureml.core.webservice import AciWebservice
-    from azureml.core.webservice import Webservice
-    from azureml.core.model import Model
-    from azureml.core.environment import Environment
-
     inference_config = InferenceConfig(
         environment=best_run.get_environment(), entry_script=script_file_name
     )
@@ -466,7 +475,6 @@ def main(args):
 
 
     # Load the bank marketing datasets.
-    from numpy import array
 
 
     # In[ ]:
@@ -515,8 +523,6 @@ def main(args):
 
 
     get_ipython().run_line_magic('matplotlib', 'notebook')
-    from sklearn.metrics import confusion_matrix
-    import itertools
 
     cf = confusion_matrix(actual, y_pred)
     plt.imshow(cf, cmap=plt.cm.Blues, interpolation="nearest")
@@ -609,11 +615,6 @@ def main(args):
     # In[ ]:
 
 
-    import uuid
-    from azureml.core import ScriptRunConfig
-    from azureml._restclient.models import RunTypeV2
-    from azureml._restclient.models.create_run_dto import CreateRunDto
-    from azureml._restclient.run_client import RunClient
 
     codegen_runid = str(uuid.uuid4())
     client = RunClient(
