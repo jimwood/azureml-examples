@@ -257,6 +257,7 @@ def main(args):
     # In[ ]:
 
 
+    import azureml.widgets
     from azureml.widgets import RunDetails
 
     RunDetails(remote_run).show()
